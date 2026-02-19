@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<form method="post">
+    <h1 class="h3 mb-3 fw-normal">Регистрация. Уже зарегистрированы? <a href="{{ url_for('login') }}">Войти</a></h1>
+    <div class="form-floating">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email">
+        <label for="floatingInput">Email address</label>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+        <label for="floatingPassword">Password</label>
+    </div>
+    <div class="form-floating">
+        <input type="password" class="form-control" id="confirmingPassword" placeholder="Confirm" name="confirm">
+        <label for="floatingPassword">Confirm</label>
+    </div>
+    <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+    <p class="mt-5 mb-3 text-body-secondary">© 2017–2025</p>
+</form>
+{% endblock %}

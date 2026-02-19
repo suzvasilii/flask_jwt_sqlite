@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css') }}">
+    <title>Error {{ code }}</title>
+</head>
+<body>
+<div class="notfound">
+    <div class="centered"><span class="inverted">&nbsp;Error&nbsp;code&nbsp;{{ code }}&nbsp;</span><span class="shadow">&nbsp;</span></div>
+    <div class="row">&nbsp;</div>
+    <div class="row">Была обнаружена фатальная ошибка C0DE:{{ code }} in 0xC0DEBA5E.</div>
+    <div class="row">Ошибка: {{ message }}</div><br/><br/>
+    <div class="centered"><a href="{{ url_for('reg') }}" id="retry">Повторить попытку</a>...<span class="blink">&#9608;</span></div>
+</div>
+</body>
+</html>
+
