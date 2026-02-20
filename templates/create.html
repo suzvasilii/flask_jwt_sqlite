@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %} Создание нового поста {% endblock %}
+
+{% block content %}
+<header id="form_header"> Создание нового поста </header>
+<form id="create_form" class="topBefore" method="post">
+		  <input id="name" type="text" placeholder="Заголовок" name="title">
+		  <textarea id="message" type="text" placeholder="О чем бы вы хотели написать?" name="text"></textarea>
+	      <input id="submit" type="submit" value="GO!">
+
+</form>
+{% endblock %}

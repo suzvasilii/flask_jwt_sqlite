@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap');
+
+.all_posts{
+    max-width: 100vh;
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    row-gap: 10px;
+    flex-wrap: wrap;
+}
+.card{
+  width: 25rem;
+  height: auto;
+  background: #fff;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.blog-title{
+  color: #22215B;
+  padding: 1rem 0;
+  font-size: 1.5rem;
+}
+
+.description{
+  padding: 1rem 0;
+  color: #22215B80;
+  font-size: 1rem;
+}
+
+.blog-time{
+  font-size: .8rem;
+  color: red;
+}
+
+@media screen and (max-width: 1000px) {
+    .all_posts {
+        justify-content: center;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+    html {
+        font-size:15px
+    }
+}
+
+@media screen and (max-width: 465px) {
+    html {
+        font-size:14px
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .card{
+        max-width: 300px;
+    }
+}

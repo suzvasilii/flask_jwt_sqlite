@@ -17,7 +17,8 @@ class ErrorHandler:
             '0xC0DE0001': "Не указан email или пароль",
             '0xC0DE0020': "Введенные вами пароли не совпадают",
             '0xC0DE0021': "Email не найден",
-            '0xC0DE0022': "Неверный пароль"
+            '0xC0DE0022': "Неверный пароль",
+            '0xCODE0031': "Ошибка при создании поста. Не указан заголовок или текст"
         }
         message = errors_codes.get(code, "Unknown error")
         return redirect(url_for('error', code=code, message=message))
