@@ -5,5 +5,11 @@ Index page title
 {% endblock %}
 
 {% block content %}
-<h1>Index.html file</h1>
+<h1>
+    {% if context.get_is_authorized() == True %}
+    Приветсвуем, {{ context.get_name() }}!
+    {% else %}
+    Пожалуйста авторизуйтесь или зарегистрируйтесь!
+    {% endif %}
+</h1>
 {% endblock %}

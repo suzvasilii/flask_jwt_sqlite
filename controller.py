@@ -1,36 +1,52 @@
-from flask import Flask, render_template, redirect, url_for, request
-from errors import ErrorHandler
 from model import  db, User
-
+from flask_jwt_extended import create_access_token
+from werkzeug.security import generate_password_hash, check_password_hash
 class Controller:
-    def __init__(self,app):
-        self.handler = ErrorHandler(app)
 
     def registration(self, email, password, confirm):
+        data = {
+            'code': 'unknown',
+            'token':''
+        }
+
         if email == "" or password == "":
-            return self.handler.throw_error('0xC0DE0001')
+            data['code'] = '0xC0DE0001'
+            return data
+
         if password != confirm:
-            return self.handler.throw_error('0xC0DE0020')
+            data['code'] = '0xC0DE0020'
+            return data
         try:
             candidate = User.query.filter_by(email=email).first()
             if candidate:
-                return self.handler.throw_error('0xC0DE0019')
+                data['code'] = '0xC0DE0019'
+                return data
+            password = generate_password_hash(password, salt_length=16)
             user = User(email=email, password=password)
             db.session.add(user)
             db.session.commit()
-            return redirect('/login')
+            access_token = create_access_token(identity=email)
+            data['code'], data['token'] = '0', access_token
+            return data
         except:
-            return self.handler.throw_error()
+            return data
 
     def login(self, email, password):
+        data = {
+            'code': 'unknown',
+            'token': ''
+        }
         if email == '' or password == '':
-            return self.handler.throw_error('0xC0DE0001')
+            data['code'] = '0xC0DE0001'
+            return data
         try:
             candidate = User.query.filter_by(email=email).first()
             if candidate:
-                if candidate.password == password:
-                    return redirect('/')
-                return self.handler.throw_error('0xC0DE0022')
-            return self.handler.throw_error('0xC0DE0021')
+                if check_password_hash(candidate.password,password):
+                    access_token = create_access_token(identity=email)
+                    data['code'],data['token'] = '0', access_token
+                    return data
+                data['code'] = '0xC0DE0021'
+                return data
         except:
-            return self.handler.throw_error()
+            return data
