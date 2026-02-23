@@ -30,14 +30,9 @@
                     <li><a href="{{ url_for('allposts') }}" class="nav-link px-2 text-white">Все посты</a></li>
                     <li><a href="{{ url_for('create') }}" class="nav-link px-2 text-white">Создать пост</a></li>
                     <li><a href="{{ url_for('about') }}" class="nav-link px-2 text-white">О сайте</a></li>
+                    <li><a href="{{ url_for('login') }}" class="nav-link px-2 text-white">Вход</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="nav-link px-2 text-white">Выход</a></li>
                 </ul>
-                <div class="text-end">
-                    {% if context.get_is_authorized() == True %}
-                    <a href="{{ url_for('logout') }}"><button type="button" class="btn btn-warning">Выйти</button></a>
-                    {% else %}
-                    <a href="{{ url_for('login') }}"><button type="button" class="btn btn-warning">Войти</button></a>
-                    {% endif %}
-                </div>
             </div>
         </div>
     </header>

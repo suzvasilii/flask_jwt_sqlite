@@ -4,7 +4,6 @@ from flask import make_response
 from controller import Controller
 from errors import ErrorHandler
 from context import Context
-from utils import filter_posts
 from model import db
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdb.db'
@@ -34,17 +33,11 @@ def invalid_token_loader(error):
 @jwt.expired_token_loader
 def expired_token_loader(jwt_header, jwt_payload):
     return "<h1>Зайдите в систему заново или зарегистрируйтесь</h1>"
-
-@app.context_processor
-def inject_globals():
-    return dict(
-        context=context
-    )
 @app.route("/")
 @app.route("/index")
 def index():
     print(context.get_is_authorized())
-    return render_template('index.html')
+    return render_template('index.html', context = context)
 
 @app.route("/about")
 def about():
@@ -82,31 +75,28 @@ def logout():
 def create():
     if request.method == 'POST':
         title, text = request.form['title'], request.form['text']
-        code= controller.create(title, text, context.get_email())
+        code= controller.create(title, text, context.get_name())
         return redirect("/myposts") if code == '0' else handler.throw_error(code)
     return render_template('create.html')
 @app.route("/myposts")
 @jwt_required()
 def myposts():
-    data = controller.get_my_posts(context.get_email())
+    data = controller.get_my_posts(context.get_name())
     if data['code'] == '0':
         return render_template('posts.html', posts=data['posts'])
     return handler.throw_error(data['code'])
 
-@app.route("/allposts", methods=['POST', 'GET'])
+@app.route("/allposts")
+@jwt_required()
 def allposts():
-    if request.method == 'POST':
-        author, title = request.form['author'], request.form['title']
-        filtered_posts = filter_posts(author, title, context.get_posts())
-        return render_template('posts.html', posts=filtered_posts)
+    print("get_all")
     data = controller.get_all_posts()
     if data['code'] == '0':
-        context.set_posts(data['posts'])
         return render_template('posts.html', posts=data['posts'])
     return handler.throw_error(data['code'])
 
 def set_context(email=None, is_authorized=False, data=None, redirect_for='index'):
-    context.set_email(email)
+    context.set_name(email)
     context.set_is_authorized(is_authorized)
     response = make_response(redirect(url_for(redirect_for)))
     token = data['token'] if data is not None else ''
@@ -118,6 +108,6 @@ if __name__ == "__main__":
         db.init_app(app)
         with app.app_context():
             db.create_all()
-        app.run(debug=True)
+        app.run()
     except Exception as e:
         print("При запуске приложения произошла ошибка\n", e)
