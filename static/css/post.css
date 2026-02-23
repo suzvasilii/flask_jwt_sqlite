@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap');
 
+/* POSTS */
+
+.search_input{
+    max-width: 500px;
+    margin-bottom: 15px;
+}
+
+#search_block{
+    margin-bottom: 25px;
+}
+
 .all_posts{
     max-width: 100vh;
     display: flex;

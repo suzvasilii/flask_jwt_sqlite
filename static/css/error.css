@@ -1,3 +1,5 @@
+/* ERROR */
+
 *, :after, :before, html {
     box-sizing: border-box;
 }
