@@ -3,12 +3,24 @@
 {% block title %}
 Index page title
 {% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
 {% block content %}
-<h1>
     {% if context.is_authorized %}
-    Приветствуем, {{ context.email }}!
+        <div class="index_wrapper">
+		 <div class="firework"></div>
+         <div class="firework"></div>
+         <div class="firework"></div>
+        <div class="index_card">
+            <h3>Привет, {{ context.email }}!</h3>
+	        <p>Теперь ты можешь пользоваться всеми функиями этого приложения</p>
+            <a href="{{ url_for('create') }}"><button>Можешь создать новый пост</button></a>
+        </div>
+        </div>
     {% else %}
     Пожалуйста авторизуйтесь или зарегистрируйтесь!
     {% endif %}
-</h1>
 {% endblock %}

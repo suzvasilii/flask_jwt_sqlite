@@ -2,6 +2,10 @@
 
 {% block title %} Посты {% endblock %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/post.css') }}">
+{% endblock %}
+
 {% block content %}
 <form id="search_block" method="post">
    {% if not my %}
