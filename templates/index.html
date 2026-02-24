@@ -5,8 +5,8 @@ Index page title
 {% endblock %}
 {% block content %}
 <h1>
-    {% if context.get_is_authorized() == True %}
-    Приветсвуем, {{ context.get_email() }}!
+    {% if context.is_authorized %}
+    Приветствуем, {{ context.email }}!
     {% else %}
     Пожалуйста авторизуйтесь или зарегистрируйтесь!
     {% endif %}

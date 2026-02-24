@@ -29,6 +29,17 @@
   position: relative;
 }
 
+.user_icon{
+    max-width: 64px;
+    max-height: 64px;
+}
+
+.card_header{
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+}
+
 .blog-title{
   color: #22215B;
   padding: 1rem 0;
@@ -43,7 +54,6 @@
 
 .blog-time{
   font-size: .8rem;
-  color: red;
 }
 
 @media screen and (max-width: 1000px) {

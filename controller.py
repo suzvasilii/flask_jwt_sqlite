@@ -1,8 +1,14 @@
-from model import  db, User, Post
-from flask_jwt_extended import create_access_token
+import datetime
+import os
+from dotenv import load_dotenv
+from models import  db, User, Post
+import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
-class Controller:
 
+load_dotenv()
+SECRET = os.getenv("JWT")
+
+class Controller:
     def registration(self, email, password, confirm):
         data = {
             'code': 'unknown',
@@ -25,8 +31,9 @@ class Controller:
             user = User(email=email, password=password)
             db.session.add(user)
             db.session.commit()
-            access_token = create_access_token(identity=email)
-            data['code'], data['token'] = '0', access_token
+            token = jwt.encode({'user': email,
+                                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)}, SECRET)
+            data['code'], data['token'] = '0', token
             return data
         except:
             return data
@@ -43,8 +50,10 @@ class Controller:
             candidate = User.query.filter_by(email=email).first()
             if candidate:
                 if check_password_hash(candidate.password,password):
-                    access_token = create_access_token(identity=email)
-                    data['code'],data['token'] = '0', access_token
+                    token = jwt.encode({'user': email,
+                                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)}, SECRET)
+                    print('token=', token)
+                    data['code'],data['token'] = '0', token
                     return data
                 data['code'] = '0xC0DE0022'
                 return data

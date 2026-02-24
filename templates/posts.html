@@ -4,19 +4,25 @@
 
 {% block content %}
 <form id="search_block" method="post">
-  <input type="text" class="form-control search_input"  placeholder="Искать по автору" name="author">
-  <input type="text" class="form-control search_input"  placeholder="Искать по заголовку" name="title">
-  <a href="{{ url_for('allposts') }}"><button type="submit" class="btn btn-warning">Искать</button></a>
+   {% if not my %}
+    <input type="text" class="form-control search_input"  placeholder="Искать по автору" name="author">
+    <input type="text" class="form-control search_input"  placeholder="Искать по заголовку" name="title">
+    <a href="{{ url_for('allposts') }}"><button type="submit" class="btn btn-warning">Искать</button></a>
+    {% else %}
+    <input type="text" class="form-control search_input"  placeholder="Искать по заголовку" name="title">
+    <a href="{{ url_for('myposts') }}"><button type="submit" class="btn btn-warning">Искать</button></a>
+    {% endif %}
 </form>
 <div class="all_posts">
 {% for post in posts %}
   <div class="card">
-    <h2 class="author_name">{{ post.user.email }}</h2>
-    <h3 class="blog-title">{{ post.title }}</h3>
-    <span class="blog-time">{{ post.created_at }}</span>
-    <p class="description">
-      {{ post.text }}
-    </p>
+        <div class="card_header">
+            <img class="user_icon" src="{{ url_for ('static', filename = 'img/user_icon.png')}}">
+            <h4 class="author_name">{{ post.user.email }}</h4>
+        </div>
+        <span class="blog-time">{{ post.created_at }}</span>
+        <p class="blog-title">{{ post.title }}</p>
+        <p class="description">{{ post.text }}</p>
   </div>
 {% endfor %}
 </div>

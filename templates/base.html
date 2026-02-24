@@ -32,7 +32,7 @@
                     <li><a href="{{ url_for('about') }}" class="nav-link px-2 text-white">О сайте</a></li>
                 </ul>
                 <div class="text-end">
-                    {% if context.get_is_authorized() == True %}
+                    {% if context.is_authorized %}
                     <a href="{{ url_for('logout') }}"><button type="button" class="btn btn-warning">Выйти</button></a>
                     {% else %}
                     <a href="{{ url_for('login') }}"><button type="button" class="btn btn-warning">Войти</button></a>

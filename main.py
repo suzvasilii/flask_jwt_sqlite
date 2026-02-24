@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_jwt_extended import JWTManager, jwt_required, get_jwt
-from flask import make_response
+import os
+from dotenv import load_dotenv
+import jwt
 from controller import Controller
 from errors import ErrorHandler
 from context import Context
-from utils import filter_posts
-from model import db
+from utils import filter_posts, filter_my_posts
+from models import db
+
+load_dotenv()
+SECRET = os.getenv("JWT")
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///userdb.db'
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
@@ -14,36 +18,37 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_size' : 10,
     'connect_args': {'timeout': 15}
 }
-app.config['JWT_SECRET_KEY'] = 'Y~O~2KH}'
-app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-app.config['JWT_COOKIE_CSRF_PROTECT'] = False
-app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
-jwt = JWTManager(app)
+app.config['secret_key'] = SECRET
 handler = ErrorHandler(app)
 controller = Controller()
 context = Context()
 
-@jwt.unauthorized_loader
-def unauthorized_loader(error):
-    return "<h1>Зарегистрируйтесь или войдите</h1>"
-
-@jwt.invalid_token_loader
-def invalid_token_loader(error):
-    return "<h1>Получен неверный токен</h1>"
-
-@jwt.expired_token_loader
-def expired_token_loader(jwt_header, jwt_payload):
-    return "<h1>Зайдите в систему заново или зарегистрируйтесь</h1>"
+@app.before_request
+def clear():
+    print(request.cookies)
 
 @app.context_processor
 def inject_globals():
     return dict(
         context=context
     )
+
+def token_required(func):
+    def decorator(*args, **kwargs):
+        token = context.token
+        if token is None:
+            return "<h1>Необходимо авторизоваться</h1>"
+        try:
+            jwt.decode(token, app.config['secret_key'], algorithms="HS256")
+            return func(*args, **kwargs)
+        except Exception as e:
+            return "<h1> При проверке подлинности произошла ошибка, выполните вход в систему заново </h1>"
+    decorator.__name__ = func.__name__
+    return decorator
+
 @app.route("/")
 @app.route("/index")
 def index():
-    print(context.get_is_authorized())
     return render_template('index.html')
 
 @app.route("/about")
@@ -77,41 +82,46 @@ def reg():
 def logout():
     return set_context()
 
-@app.route("/create", methods=['POST', 'GET'])
-@jwt_required()
+@app.route("/create", methods=['POST', 'GET'], endpoint='create')
+@token_required
 def create():
     if request.method == 'POST':
         title, text = request.form['title'], request.form['text']
-        code= controller.create(title, text, context.get_email())
+        code= controller.create(title, text, context.email)
         return redirect("/myposts") if code == '0' else handler.throw_error(code)
     return render_template('create.html')
-@app.route("/myposts")
-@jwt_required()
+
+@app.route("/myposts", methods=['POST', 'GET'])
+@token_required
 def myposts():
-    data = controller.get_my_posts(context.get_email())
+    if request.method == 'POST':
+        title = request.form['title']
+        filtered = filter_my_posts(title, context.posts)
+        return render_template('posts.html', posts=filtered, my=True)
+    data = controller.get_my_posts(context.email)
     if data['code'] == '0':
-        return render_template('posts.html', posts=data['posts'])
+        context.posts = data['posts']
+        return render_template('posts.html', posts=data['posts'], my=True)
     return handler.throw_error(data['code'])
 
 @app.route("/allposts", methods=['POST', 'GET'])
+@token_required
 def allposts():
     if request.method == 'POST':
         author, title = request.form['author'], request.form['title']
-        filtered_posts = filter_posts(author, title, context.get_posts())
-        return render_template('posts.html', posts=filtered_posts)
+        filtered_posts = filter_posts(author, title, context.posts)
+        return render_template('posts.html', posts=filtered_posts, my=False)
     data = controller.get_all_posts()
     if data['code'] == '0':
-        context.set_posts(data['posts'])
-        return render_template('posts.html', posts=data['posts'])
+        context.posts = data['posts']
+        return render_template('posts.html', posts=data['posts'], my=False)
     return handler.throw_error(data['code'])
 
 def set_context(email=None, is_authorized=False, data=None, redirect_for='index'):
-    context.set_email(email)
-    context.set_is_authorized(is_authorized)
-    response = make_response(redirect(url_for(redirect_for)))
-    token = data['token'] if data is not None else ''
-    response.set_cookie('access_token',token, httponly=True)
-    return response
+    context.email = email
+    context.is_authorized = is_authorized
+    context.token = data['token'] if data is not None else None
+    return redirect(redirect_for)
 
 if __name__ == "__main__":
     try:

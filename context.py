@@ -2,22 +2,37 @@ class Context:
     def __init__(self):
         self.__email = None
         self.__is_authorized = False
+        self.__token = None
         self.__posts = []
 
-    def get_email(self):
+    @property
+    def email(self):
         return self.__email
 
-    def get_is_authorized(self):
+    @property
+    def is_authorized(self):
         return self.__is_authorized
 
-    def get_posts(self):
+    @property
+    def token(self):
+        return self.__token
+
+    @property
+    def posts(self):
         return self.__posts
 
-    def set_email(self,email):
+    @email.setter
+    def email(self,email):
         self.__email = email
 
-    def set_is_authorized(self, is_authorized):
+    @is_authorized.setter
+    def is_authorized(self, is_authorized):
         self.__is_authorized=is_authorized
 
-    def set_posts(self, posts):
+    @token.setter
+    def token(self, token):
+        self.__token = token
+
+    @posts.setter
+    def posts(self, posts):
         self.__posts = posts
