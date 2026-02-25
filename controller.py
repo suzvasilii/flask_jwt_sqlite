@@ -112,3 +112,14 @@ class Controller:
             return {
                 'code': 'unknown'
             }
+
+    def del_post(self, post_id):
+        try:
+            deleting = Post.query.get(post_id)
+            if deleting:
+                db.session.delete(deleting)
+                db.session.commit()
+                return '0'
+        except Exception as e:
+            return 'unknown'
+

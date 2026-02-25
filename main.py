@@ -96,6 +96,15 @@ def myposts():
         return render_template('posts.html', posts=data['posts'], my=True)
     return handler.throw_error(data['code']) # Если вернулся код ошибки, рендерим страницу с ошибкой
 
+# Роут удаления поста
+@app.route("/delete/<id>")
+@token_required(context)
+def delete(id):
+    code = controller.del_post(id) # Получаем код из контроллера
+    if code == '0': # В случая успеха редиректим на страницу моих постов
+        return redirect(url_for("myposts"))
+    return handler.throw_error(code) # В ином случае редиректим на страницу с кодом ошибки
+
 # Роут всех постов
 @app.route("/allposts", methods=['POST', 'GET'])
 @token_required(context) # Для доступа к этому ресурсу нужна jwt-авторизация

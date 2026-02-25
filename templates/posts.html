@@ -27,6 +27,11 @@
         <span class="blog-time">{{ post.created_at }}</span>
         <p class="blog-title">{{ post.title }}</p>
         <p class="description">{{ post.text }}</p>
+        {% if my %}
+        <a href="{{ url_for('delete', id=post.id) }}" >
+            <button type="submit" class="btn btn-warning"> Удалить пост </button>
+        </a>
+        {% endif %}
   </div>
 {% endfor %}
 </div>

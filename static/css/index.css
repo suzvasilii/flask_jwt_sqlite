@@ -1,13 +1,20 @@
 /* MAIN PAGE */
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap");
 
+.index_wrapper {
+  margin: 0 auto;
+  height: 100vh;
+  max-width: 100vh;
+  overflow: hidden;
+}
+
 .index_card {
   background-color: #eceff1;
   border-radius: 30px;
   text-align: center;
   padding: 15px;
   max-width: 375px;
-  margin: 100px auto;
+  margin: 20px auto;
   box-shadow: 20px 20px 20px #e6eaed, -20px -20px 20px #f2f4f5;
 }
 
@@ -49,13 +56,6 @@
 .index_card button:active {
   transform: scale(0.9);
   box-shadow: inset -1px -1px 3px rgba(122, 196, 125, 0.3), -20px -20px 20px rgba(136, 202, 139, 0);
-}
-
-.index_wrapper {
-  margin: 0;
-  height: 100vh;
-  width: 100vh;
-  overflow: hidden;
 }
 
 @keyframes firework {

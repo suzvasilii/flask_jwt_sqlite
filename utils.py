@@ -1,4 +1,4 @@
-from flask import redirect
+from flask import redirect, url_for
 import operator as op
 import os
 import jwt
@@ -26,7 +26,7 @@ def token_required(context): # Внешний декоратор должен п
         def wrapper(*args, **kwargs):
             token = context.token # Получаем токен из контекста
             if token is None:
-                return "<h1>Необходимо авторизоваться</h1>"
+                return redirect(url_for('index'))
             try:
                 jwt.decode(token, SECRET, algorithms="HS256") # Пробуем распознать токен
                 return func(*args, **kwargs)
